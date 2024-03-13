@@ -41,3 +41,39 @@ This dataset contains a list of sales and movement data by item and department a
 
 This project is entirely developed in cloud using GitHub Codespaces. A free version of GitHub Codespaces should suffice for this project.
 
+## Steps
+
+1. Build GCP infra using terraform. If not, install terraform using this [link](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+    - Check that terraform is installed  
+    ```
+    terraform --version
+    ```
+    - Update `variables.tf` file with your variables
+    - Update `.tf` files to terraform format 
+    ```
+    cd terraform-gcp
+    terraform fmt
+    ```
+
+    - Download providers
+    ```
+    terraform init
+    ```
+
+    - See the plan
+     ```
+     terraform plan
+     ```
+
+    - apply the plan to create infra
+    ```
+    terraform apply
+    yes
+    ```
+    - Verify in google cloud console that bucket and bigquerry dataset are created 
+    - Destroy the infra (optional, at the end of the project to cleanup)
+    ```
+    terraform destroy
+    yes
+    ```
+2. 
