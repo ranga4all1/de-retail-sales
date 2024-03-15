@@ -200,3 +200,4 @@ creds/
 # data
 data/
 terraform-gcp/.terraform.lock.hcl
+terraform-mage/gcp/.terraform.lock.hcl
