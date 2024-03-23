@@ -39,7 +39,7 @@ This dataset contains a list of sales and movement data by item and department a
 
 ## Dev Setup
 
-This project is entirely developed in cloud using GitHub Codespaces. A free version of GitHub Codespaces should suffice for this project.
+This project is entirely developed in cloud using GitHub Codespaces that mimics local system. A free version of GitHub Codespaces should suffice for this project.
 
 ## Deployment setup
 
@@ -223,4 +223,58 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
         ![GCS Bucket](images/gcs-bucket.png)
     
-5. 
+5. Batch processing
+
+    - PySpark for testing on Local system (GitHub codespace)
+        - Download latest Cloud Storage connector for Hadoop 3.x
+        ```
+        cd /home/codespace/bin
+        wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-latest.jar
+        wget https://storage.googleapis.com/spark-lib/bigquery/spark-3.5-bigquery-0.36.1.jar
+        cd /workspaces/de-retail-sales/batch/
+        ```
+        - Run below commands in terminal
+        ```
+        cd batch
+        pip install pyspark
+        ```
+        - Start jupyter-lab server for notebooks and connect to URL for jupyter
+        ```
+        jupyter-lab
+        ```
+        - Access and run notebook for spark - `batch-spark.ipynb`. This should process data and create star schema files in gcs bucket.
+    
+    - In Google cloud console, go to BigQuery -> run queries from `batch/load-data-bigquery`. This should create star-schema in DWH and populate the data.
+
+6. Data Analysis - Dashboard - Looker studio
+    
+    - Go to Looker Studio: `https://lookerstudio.google.com`
+        - Click Blank report -> connect to data -> BigQuery -> <your-project-id> -> de-retail-sales -> select all 4 tables of the star schema ending with np.
+
+        ![Data sources](images/data-sources.png)
+
+        - Create a `Blended table` by joining dimension tables with fact table
+
+        ![Blend data](images/blend-data.png)
+
+        - Create your dashboard visualization.
+
+        ![Dashboard](images/dashboard-de-retail-sales.png)
+
+        - Additionally, My dashboard is available at this [link](https://lookerstudio.google.com/s/pTpmX0LK1Ug). Also, pdf version of dashboard is available in `images` folder.
+
+
+------------------------------------------------------
+
+TO-DO:
+
+    - Setting up a Spark Dataproc Cluster (Managed apache Hadoop)
+        - In Google cloud console, search and click `Dataproc`
+        - Click `enable` for Cloud Dataproc API (If not used/done previously)
+        - Click 'Create Cluster' -> Cluster on compute engine' -> create with below parameters. Keep all others as default.
+            name: `de-retails-sales-cluster`
+            region: same as used for you gcs bucket
+            zone: same as used for you gcs bucket
+            cluster type: single node
+            option components: Jupyter notbook and Docker
+        -  
