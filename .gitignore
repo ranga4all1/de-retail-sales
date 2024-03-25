@@ -201,3 +201,4 @@ creds/
 data/
 terraform-gcp/.terraform.lock.hcl
 terraform-mage/gcp/.terraform.lock.hcl
+README copy.md
