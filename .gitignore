@@ -202,3 +202,5 @@ data/
 terraform-gcp/.terraform.lock.hcl
 terraform-mage/gcp/.terraform.lock.hcl
 README copy.md
+batch/batch-spark-test.ipynb
+batch/raw.py
