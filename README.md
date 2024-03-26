@@ -1,9 +1,7 @@
-# de-retail-sales
+# Overview: de-retail-sales
 A complete data engineering project for Montgomery County of Maryland - Warehouse and Retail Sales.
 
-In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file to building a visualization-ready dataset.
-
-![Project Architecture](images/de-retail-sales-1.jpg)
+In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, batch processsing to building a visualization-ready dataset in OLAP DWH using star-schema.
 
 ## Dataset 
 We will be using Montgomery County of Maryland - Warehouse and Retail Sales dataset from data.gov
@@ -37,17 +35,51 @@ This dataset contains a list of sales and movement data by item and department a
     | RETAIL TRANSFERS    |   Cases of product transferred to DLC dispensaries    |   Number     |
     | WAREHOUSE SALES     |   Cases of product sold to MC licensees               |   Number     |
 
+## Project Architecture
+
+In this project, our initial focus was on establishing the essential data ingestion infrastructure within `Google Cloud Platform (GCP)`, leveraging `Terraform` to configure the necessary components, including Google Cloud Storage (GCS) buckets and BigQuery datasets. Subsequently, we utilized Terraform to deploy the `Mage workflow orchestrator` within the GCP environment.
+
+Following the infrastructure setup, Mage facilitated the execution of our Extract-Transform-Load (`ETL`) pipeline, seamlessly orchestrating the extraction, transformation, and loading of data from web-based `CSV` sources into our designated GCS bucket, serving as a central data lake. Notably, the data was formatted into the efficient `Parquet` structure for optimized storage and processing.
+
+For the transformation and analysis phase, we employed `Spark batch processing` capabilities, utilizing either Google Cloud `Dataproc` or local Spark instances for efficient computation. Through this process, we generated a comprehensive `star-schema`, enabling robust data modeling, and subsequently loaded the refined dataset into `BigQuery`, our Online Analytical Processing (`OLAP`) Data Warehouse.
+
+The culmination of these efforts resulted in the provisioning of data in a structured format tailored to the requirements of our data team, facilitating seamless integration into their analytical and data science workflows.
+
+To provide intuitive insights into the processed data, we leveraged `LookerStudio` to craft **dashboard** visualizations, effectively showcasing the usability and insights derived from our engineered data pipeline.
+
+- High level architecture of the project:
+![Project Architecture](images/de-retail-sales-1.jpg)
+
+- Star schema:
+![Star-schema](images/star-schema.png)
+
+## Tech Stack
+
+- Python
+- Terraform - Infrastructure build
+- Mage - workflow orchestrator
+- Spark - Batch processing
+- GCS bucket - Data lake
+- BigQuery - OLAP Data Warehouse
+- Looker Studio - Analytics dashboard
+
 ## Dev Setup
 
 This project is entirely developed in cloud using GitHub Codespaces that mimics local system. A free version of GitHub Codespaces should suffice for this project.
 
-## Deployment setup
+## Deployment Setup
 
 This project uses Google cloud (GCP) resources. A free version of GCP should suffice for this project.
 
 Note: In the end, You may want to destroy resources used for this project to avoid recurring charges, if any.
 
 ## Steps
+
+1. Clone this repo to your dev system(loacl or GitHub Codespace, VM in cloud etc.)
+    ```
+    git clone https://github.com/ranga4all1/de-retail-sales.git
+    cd de-retail-sales
+    ```
 
 1. Build GCP infra using terraform. 
     - Check that terraform is installed. If not, install terraform using this [link](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)  
@@ -71,16 +103,14 @@ Note: In the end, You may want to destroy resources used for this project to avo
      terraform plan
      ```
 
-    - apply the plan to create infra
+    - apply the plan to create infra, answer `yes` when prompted.
     ```
     terraform apply
-    yes
     ```
     - Verify in google cloud console that bucket and bigquerry dataset are created 
     - Destroy the infra (optional, at the end of the project to cleanup)
     ```
     terraform destroy
-    yes
     ```
 2. Build Mage workflow orchestrator
 
@@ -97,64 +127,23 @@ Note: In the end, You may want to destroy resources used for this project to avo
     gcloud auth list
     gcloud storage ls --project PROJECT_ID
     ```
-    - Download mage terraform templates
+    - update 'variables.tf file with your variables and Create mage infra. Answer `yes` when prompted.
     ```
-    mkdir terraform-mage
-    cd terraform-mage/
-    git clone https://github.com/mage-ai/mage-ai-terraform-templates.git
-    cp -Rn mage-ai-terraform-templates .
-    cd gcp
-    ```
-    - update 'variables.tf file with your variables. Additionally add this code block to that file.
-    ```
-        variable "credentials" {
-        description = "my credentials"
-        default     = "CREDENTIALS"
-        # Replace CREDENTIALS with 'path to your creds json file'
-        # Do NOT upload credentials files to github to repository or anywhere on internet
-        # This can be done by adding those files/folders to .gitignore
-        }
-    ```
-    - Check and update 'main.tf' file with below code 
-        ```
-        provider "google" {
-          credentials = file(var.credentials)
-          project     = var.project_id
-          region      = var.region
-          zone        = var.zone
-        }
-
-        provider "google-beta" {
-          credentials = file(var.credentials)
-          project     = var.project_id
-          region      = var.region
-          zone        = var.zone
-        }
-
-        # Enable filestore API
-        resource "google_project_service" "filestore" {
-          service            = "file.googleapis.com"
-          disable_on_destroy = false
-        }
-        ```
-    - Create mage infra
-    ```
+    cd terraform-mage/gcp
     terraform fmt
     terraform init
     terraform plan
     terraform apply
-    yes
     ```
     - Destroy the infra (optional, at the end of the project to cleanup)
     ```
     terraform destroy
-    yes
     ```
     - Verify in google cloud console that resources are created
 
     Notes:  
     1. Provide postgres password of your choice when prompted. 
-    2. This step may fail initially after api enablement. Rerun again.
+    2. This step may fail initially after api enablement as it takes time for api to become available. In that case, rerun again.
     3. This step may take several minutes to complete.
 
 3. Mage workflow orchestration env configuration
