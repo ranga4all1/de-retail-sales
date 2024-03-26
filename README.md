@@ -161,7 +161,11 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
     - In Google cloud console, go to 'Cloud Run' -> Networking. Select 'All' in Ingress control and 'save'.
         Note:  For simplicity, we are allowing all access. You can go more granular by allowing your own ip address only.
+    ![Mage Cloud Run](images/mage-cloud-run.png)
+
     - Click URL for your Cloud Run service. This should give you access to Mage workflow orchestrator GUI.
+    ![Mage](images/mage-url.png)
+
     - In Mage workflow orchestrator GUI, click 'Files', Right click on 'default_repo' -> Upload files. Upload your mage service account credentials file. This is the credentials file that have access to required GCP resources sunch as gcs bucket and BigQuerry.
     - Click Terminal and run below commands from within `/home/src` dir to move that file to `/home/src/`
     ```
@@ -226,8 +230,6 @@ Note: In the end, You may want to destroy resources used for this project to avo
 5. Batch processing
 
     **Option 1: Spark Dataproc Cluster (Managed apache Hadoop) on GCP**
-
-    TO-DO:
 
     - Setting up a Spark Dataproc Cluster (Managed apache Hadoop)
         - In Google cloud console, search and click `Dataproc`
