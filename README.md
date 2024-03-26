@@ -225,6 +225,46 @@ Note: In the end, You may want to destroy resources used for this project to avo
     
 5. Batch processing
 
+    **Option 1: Spark Dataproc Cluster (Managed apache Hadoop) on GCP**
+
+    TO-DO:
+
+    - Setting up a Spark Dataproc Cluster (Managed apache Hadoop)
+        - In Google cloud console, search and click `Dataproc`
+        - Click `enable` for Cloud Dataproc API (If not used/done previously)
+        - Click 'Create Cluster' -> Cluster on compute engine' -> create with below parameters. Keep all others as default.
+            name: `de-retail-sales-cluster`
+            region: same as used for you gcs bucket
+            zone: same as used for you gcs bucket
+            cluster type: single node
+            option components: Jupyter notbook and Docker
+        - In Google cloud console, go to BigQuery -> Note down temp bucket created by spark dataproc cluter in this format - `gs://[bucket]/.spark-bigquery-[jobid]-[UUID]`
+
+    - Update `batch/01-dataproc/batch-spark-bigquery.py` with below parameters and save.
+        ```
+        # Replace below with your GCP project_id
+        project_id = '<your_project_id>'
+        # Replace below with your temp bucket created by spark dataproc cluter
+        spark.conf.set('temporaryGcsBucket', '<dataproc-temp-bucket>')
+        ```
+    - Upload `batch/01-dataproc/batch-spark-bigquery.py` to your GCS bucket as `code/batch-spark-bigquery.py`
+    - in Terminal, submit a job to Dataproc cluster using BigQuery connector. Change parameters with your details.
+        ```
+        gcloud dataproc jobs submit pyspark \
+            --cluster=de-retail-sales-cluster \
+            --region=us-west1 \
+            --jars=gs://spark-lib/bigquery/spark-bigquery-latest_2.12.jar \
+            gs://woven-edge-412500-de-retail-sales-bucket/code/batch-spark-bigquery.py \
+            -- \
+                --input_retail=woven-edge-412500-de-retail-sales-bucket/retail_data/* \
+                --output=woven-edge-412500.de_retail_sales_star_schema`
+        ```
+        Note: The connector writes the data to BigQuery by first buffering all the data into a Cloud Storage temporary table. Then it copies all data from into BigQuery in one operation. The connector attempts to delete the temporary files once the BigQuery load operation has succeeded and once again when the Spark application terminates. If the job fails, remove any remaining temporary Cloud Storage files. Typically, temporary BigQuery files are located in gs://[bucket]/.spark-bigquery-[jobid]-[UUID]
+    - In Google cloud console, go to BigQuery and verify that dataset is created/populated with data as expected
+    ![DWH](images/DWH.png) 
+
+    **Option 2: PySpark on Local system (GitHub codespace)**
+
     - PySpark for testing on Local system (GitHub codespace)
         - Download latest Cloud Storage connector for Hadoop 3.x
         ```
@@ -247,6 +287,8 @@ Note: In the end, You may want to destroy resources used for this project to avo
     - In Google cloud console, go to BigQuery -> run queries from `batch/load-data-bigquery`. This should create star-schema in DWH and populate the data.
 
 6. Data Analysis - Dashboard - Looker studio
+
+    Note: Data Analysis/visualization is not focus of this project, though this step is performed to demonstrate that final data in BigQuery DWH (OLAP) is in right format to be consumed further by Data team.
     
     - Go to Looker Studio: `https://lookerstudio.google.com`
         - Click Blank report -> connect to data -> BigQuery -> <your-project-id> -> de-retail-sales -> select all 4 tables of the star schema ending with np.
@@ -261,20 +303,5 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
         ![Dashboard](images/dashboard-de-retail-sales.png)
 
-        - Additionally, My dashboard is available at this [link](https://lookerstudio.google.com/s/pTpmX0LK1Ug). Also, pdf version of dashboard is available in `images` folder.
-
-
-------------------------------------------------------
-
-TO-DO:
-
-    - Setting up a Spark Dataproc Cluster (Managed apache Hadoop)
-        - In Google cloud console, search and click `Dataproc`
-        - Click `enable` for Cloud Dataproc API (If not used/done previously)
-        - Click 'Create Cluster' -> Cluster on compute engine' -> create with below parameters. Keep all others as default.
-            name: `de-retails-sales-cluster`
-            region: same as used for you gcs bucket
-            zone: same as used for you gcs bucket
-            cluster type: single node
-            option components: Jupyter notbook and Docker
-        -  
+        - PDF version of dashboard is available in `images` folder.
+        - Additionally, My dashboard is available at this [link](https://lookerstudio.google.com/s/pTpmX0LK1Ug). This may be teared down after 2 weeks. 
