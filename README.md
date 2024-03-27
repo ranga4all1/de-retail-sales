@@ -326,7 +326,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     Note: Data Analysis/visualization is not focus of this project, though this step is performed to demonstrate that final data in BigQuery DWH (OLAP) is in right format to be consumed further by Data team.
     
     - Go to Looker Studio: `https://lookerstudio.google.com`
-        - Click Blank report -> connect to data -> BigQuery -> <your-project-id> -> de-retail-sales -> select all 4 tables of the star schema ending with np.
+        - Click Blank report -> connect to data -> BigQuery -> <your-project-id> -> de-retail-sales -> select all 4 tables of the star schema.
 
         ![Data sources](images/data-sources.png)
 
