@@ -48,9 +48,11 @@ The culmination of these efforts resulted in the provisioning of data in a struc
 To provide intuitive insights into the processed data, we leveraged `LookerStudio` to craft **dashboard** visualizations, effectively showcasing the usability and insights derived from our engineered data pipeline.
 
 - High level architecture of the project:
+
 ![Project Architecture](images/de-retail-sales-1.jpg)
 
 - Star schema:
+
 ![Star-schema](images/star-schema.png)
 
 ## Tech Stack
@@ -75,7 +77,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
 ## Steps
 
-1. Setup Google Cloud Platform (GCP)
+1. **Setup Google Cloud Platform (GCP)**
 
     - In Google Cloud console, create a Google Cloud Platform (GCP) project
 
@@ -97,7 +99,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
             - Leave the "Key Type" as JSON.
             - Click "Create" to create the key and download/rename/save the key file as `my-creds.json`.
 
-2. Clone this repo to your dev system(loacl or GitHub Codespace, VM in cloud etc.)
+2. **Clone this repo to your dev system(loacl or GitHub Codespace, VM in cloud etc.)**
     ```
     git clone https://github.com/ranga4all1/de-retail-sales.git
     cd de-retail-sales
@@ -107,7 +109,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
     Note: Never upload/share credentials to internet/GitHub etc. This can be prevented by adding `creds` folder to `.gitignore`
     
-3. Build GCP infra using terraform. 
+3. **Build GCP infra using terraform.** 
     - Check that terraform is installed. If not, install terraform using this [link](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)  
     ```
     terraform --version
@@ -138,7 +140,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     ```
     terraform destroy
     ```
-4. Build Mage workflow orchestrator
+4. **Build Mage workflow orchestrator**
 
     - Check that gcloud CLI is installed. If not, install using this [link](https://cloud.google.com/sdk/docs/install#linux)
     ```
@@ -172,13 +174,15 @@ Note: In the end, You may want to destroy resources used for this project to avo
     2. This step may fail initially after api enablement as it takes time for api to become available. In that case, rerun again.
     3. This step may take several minutes to complete.
 
-5. Mage workflow orchestration env configuration
+5. **Mage workflow orchestration env configuration**
 
     - In Google cloud console, go to 'Cloud Run' -> Networking. Select 'All' in Ingress control and 'save'.
         Note:  For simplicity, we are allowing all access. You can go more granular by allowing your own ip address only.
+
     ![Mage Cloud Run](images/mage-cloud-run.png)
 
     - Click URL for your Cloud Run service. This should give you access to Mage workflow orchestrator GUI.
+
     ![Mage](images/mage-url.png)
 
     - In Mage workflow orchestrator GUI, click 'Files', Right click on 'default_repo' -> Upload files. Upload your mage service account credentials file. This is the credentials file that have access to required GCP resources sunch as gcs bucket and BigQuerry.
@@ -202,6 +206,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
       client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/your_service_account_email"
     ```
     - Update this remaining section below it with `/home/src/my-creds.json`
+
     FROM:
     ```
     GOOGLE_SERVICE_ACC_KEY_FILEPATH: "/path/to/your/service/account/key.json"
@@ -213,9 +218,9 @@ Note: In the end, You may want to destroy resources used for this project to avo
     GOOGLE_LOCATION: US # Optional
     ```
 
-6. workflow orchestration
+6. **workflow orchestration: directed acyclic graph(DAG)**
 
-    - Let's start by creating a pipeline and adding our first block, a python **data loader**
+    - Let's start by creating a pipeline and adding our 1st block, a python **data loader**
         - Click Pipelines -> standard(batch)
         - Click Data Loader -> Python -> API
         - Use name: `load_retail_data`
@@ -241,8 +246,20 @@ Note: In the end, You may want to destroy resources used for this project to avo
     - Go to GCP console and verify that data is exported into GCS bucket.
 
         ![GCS Bucket](images/gcs-bucket.png)
+
+    - In Mage GUI, create schedule to run pipeline periodically
+        - Click 'Triggers' and use below parameters
+            Trigger type: Schedule
+            Trigger name: monthly_ingest_retail_data_gcs
+            Trigger description: Monthly data ingestion to run on 2nd day of each month
+            Frequency: monthly
+            Start date and time: Choose your start date/time
+        - Click 'Save changes'
+        - Click 'Enable trigger'
+
+        ![mage-schedule](images/mage-schedule.png)
     
-7. Batch processing
+7. **Batch processing**
 
     **Option 1: Spark Dataproc Cluster (Managed apache Hadoop) on GCP**
 
@@ -278,6 +295,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         ```
         Note: The connector writes the data to BigQuery by first buffering all the data into a Cloud Storage temporary table. Then it copies all data from into BigQuery in one operation. The connector attempts to delete the temporary files once the BigQuery load operation has succeeded and once again when the Spark application terminates. If the job fails, remove any remaining temporary Cloud Storage files. Typically, temporary BigQuery files are located in gs://[bucket]/.spark-bigquery-[jobid]-[UUID]
     - In Google cloud console, go to BigQuery and verify that dataset is created/populated with data as expected
+    
     ![DWH](images/DWH.png) 
 
     **Option 2: PySpark on Local system (GitHub codespace)**
@@ -303,7 +321,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     
     - In Google cloud console, go to BigQuery -> run queries from `batch/load-data-bigquery`. This should create star-schema in DWH and populate the data.
 
-8. Data Analysis - Dashboard - Looker studio
+8. **Data Analysis - Dashboard - Looker studio**
 
     Note: Data Analysis/visualization is not focus of this project, though this step is performed to demonstrate that final data in BigQuery DWH (OLAP) is in right format to be consumed further by Data team.
     
@@ -323,7 +341,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         - PDF version of dashboard is available in `images` folder.
         - Additionally, My dashboard is available at this [link](https://lookerstudio.google.com/s/pTpmX0LK1Ug). This may be teared down after 2 weeks. 
 
-9. Next steps
+9. **Next steps**
 
     - In the next iteration of this project:
 
