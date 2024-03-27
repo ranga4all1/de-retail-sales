@@ -75,13 +75,39 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
 ## Steps
 
-1. Clone this repo to your dev system(loacl or GitHub Codespace, VM in cloud etc.)
+1. Setup Google Cloud Platform (GCP)
+
+    - In Google Cloud console, create a Google Cloud Platform (GCP) project
+
+    - Create a service account key to enable services used in this project to access your GCP account. When creating the key, use the following settings:
+
+        - Select the project you created in the previous step.
+            - Click "Create Service Account".
+            - Give it any name you like and click "Create".
+            - For the Role, choose below roles, then click "Continue".
+                - Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator
+            - click "Done".
+        
+            Note: In case you of permissions issues, you can add "owner" role and test. Once it works, move back to granular access by adding only missing roles.
+            
+        - After you create your service account, download keys.
+            - Select your service account from the list.
+            - Select the "Keys" tab.
+            - In the drop down menu, select "Create new key".
+            - Leave the "Key Type" as JSON.
+            - Click "Create" to create the key and download/rename/save the key file as `my-creds.json`.
+
+2. Clone this repo to your dev system(loacl or GitHub Codespace, VM in cloud etc.)
     ```
     git clone https://github.com/ranga4all1/de-retail-sales.git
     cd de-retail-sales
+    mkdir creds
     ```
+    -  Copy `my-creds.json` to your dev system in `creds` folder.
 
-1. Build GCP infra using terraform. 
+    Note: Never upload/share credentials to internet/GitHub etc. This can be prevented by adding `creds` folder to `.gitignore`
+    
+3. Build GCP infra using terraform. 
     - Check that terraform is installed. If not, install terraform using this [link](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)  
     ```
     terraform --version
@@ -112,7 +138,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     ```
     terraform destroy
     ```
-2. Build Mage workflow orchestrator
+4. Build Mage workflow orchestrator
 
     - Check that gcloud CLI is installed. If not, install using this [link](https://cloud.google.com/sdk/docs/install#linux)
     ```
@@ -146,7 +172,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     2. This step may fail initially after api enablement as it takes time for api to become available. In that case, rerun again.
     3. This step may take several minutes to complete.
 
-3. Mage workflow orchestration env configuration
+5. Mage workflow orchestration env configuration
 
     - In Google cloud console, go to 'Cloud Run' -> Networking. Select 'All' in Ingress control and 'save'.
         Note:  For simplicity, we are allowing all access. You can go more granular by allowing your own ip address only.
@@ -187,7 +213,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     GOOGLE_LOCATION: US # Optional
     ```
 
-4. workflow orchestration
+6. workflow orchestration
 
     - Let's start by creating a pipeline and adding our first block, a python **data loader**
         - Click Pipelines -> standard(batch)
@@ -216,7 +242,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
         ![GCS Bucket](images/gcs-bucket.png)
     
-5. Batch processing
+7. Batch processing
 
     **Option 1: Spark Dataproc Cluster (Managed apache Hadoop) on GCP**
 
@@ -277,7 +303,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     
     - In Google cloud console, go to BigQuery -> run queries from `batch/load-data-bigquery`. This should create star-schema in DWH and populate the data.
 
-6. Data Analysis - Dashboard - Looker studio
+8. Data Analysis - Dashboard - Looker studio
 
     Note: Data Analysis/visualization is not focus of this project, though this step is performed to demonstrate that final data in BigQuery DWH (OLAP) is in right format to be consumed further by Data team.
     
@@ -296,3 +322,11 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
         - PDF version of dashboard is available in `images` folder.
         - Additionally, My dashboard is available at this [link](https://lookerstudio.google.com/s/pTpmX0LK1Ug). This may be teared down after 2 weeks. 
+
+9. Next steps
+
+    - In the next iteration of this project:
+
+        - Fully automate end-to-end pipeline by creating/scheduling spark-submit job via Mage workflow orchestrator.
+        - Data ingestion : Add backfill, parameterization etc.
+        - make and CI/CD
