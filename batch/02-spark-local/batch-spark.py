@@ -5,28 +5,52 @@ import pandas as pd
 import argparse
 import pyspark
 from pyspark.sql import SparkSession
+from pyspark.conf import SparkConf
+from pyspark.context import SparkContext
 from pyspark.sql.functions import monotonically_increasing_id
 
+# Replace below with you parameters
+credentials_location = '/workspaces/de-retail-sales/creds/my-creds.json'
+project_id = 'woven-edge-412500'
+input_retail = 'gs://woven-edge-412500-de-retail-sales-bucket/retail_data/*'
+output = 'gs://woven-edge-412500-de-retail-sales-bucket/star-schema/'
 
-parser = argparse.ArgumentParser()
+conf = SparkConf() \
+    .setMaster('local[*]') \
+    .setAppName('gcs_bigquery') \
+    .set("spark.jars", "/home/codespace/bin/gcs-connector-hadoop3-latest.jar, /home/codespace/bin/spark-3.1-bigquery-0.36.1.jar") \
+    .set("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
+    .set("spark.hadoop.google.cloud.auth.service.account.json.keyfile", credentials_location) \
+    .set("spark.hadoop.google.cloud.auth.project.id", project_id)
 
-parser.add_argument('--input_retail', required=True)
-parser.add_argument('--output', required=True)
+sc = SparkContext(conf=conf)
 
-args = parser.parse_args()
+hadoop_conf = sc._jsc.hadoopConfiguration()
 
-input_retail = args.input_retail
-output = args.output
-
+hadoop_conf.set("fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+hadoop_conf.set("fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
+hadoop_conf.set("fs.gs.auth.service.account.json.keyfile", credentials_location)
+hadoop_conf.set("fs.gs.auth.service.account.enable", "true")
 
 spark = SparkSession.builder \
-    .appName("Data processing with Spark") \
+    .config(conf=sc.getConf()) \
+    .config("spark.sql.extensions", "com.google.cloud.spark.bigquery.BigQuerySparkRegistrator") \
+    .config("spark.hadoop.fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem") \
+    .config("spark.hadoop.google.cloud.auth.service.account.json.keyfile", credentials_location) \
+    .config("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
+    .config("spark.hadoop.google.cloud.auth.project.id", project_id) \
     .getOrCreate()
 
-# Replace below with your GCP project_id
-project_id = '<your_project_id>'
-# Replace below with your temp bucket created by spark dataproc cluter
-spark.conf.set('temporaryGcsBucket', '<dataproc-temp-bucket>')
+# parser = argparse.ArgumentParser()
+
+# parser.add_argument('--input_retail', required=True)
+# parser.add_argument('--output', required=True)
+
+# args = parser.parse_args()
+
+# input_retail = args.input_retail
+# output = args.output
+
 
 df = spark.read.parquet(input_retail)
 
@@ -66,13 +90,13 @@ def data_modeling(df):
 # Call the data_modeling function and store the result
 star_schema = data_modeling(df)
 
-# Define the GCS path where you want to save the Parquet files
-gcs_output_path = "gs://woven-edge-412500-de-retail-sales-bucket/star-schema/"
+# # Define the GCS path where you want to save the Parquet files
+# gcs_output_path = "gs://woven-edge-412500-de-retail-sales-bucket/star-schema/"
 
 # Save each table to GCS as Parquet files
 for table_name, dataframe in star_schema.items():
     # Define the full GCS path for the table
-    table_gcs_path = f"{gcs_output_path}{table_name}/"
+    table_gcs_path = f"{output}{table_name}/"
     
     # Write the DataFrame to GCS as Parquet files
     dataframe.write.parquet(table_gcs_path, mode="overwrite")

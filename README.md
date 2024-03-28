@@ -311,7 +311,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     **Option 2: PySpark on Local system (GitHub codespace)**
 
     - PySpark for testing on Local system (GitHub codespace)
-        - Download latest Cloud Storage connector for Hadoop 3.x
+        - Download latest Cloud Storage and Bigquery connector for Hadoop 3.x
         ```
         cd /home/codespace/bin
         wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-latest.jar
@@ -320,16 +320,24 @@ Note: In the end, You may want to destroy resources used for this project to avo
         ```
         - Run below commands in terminal
         ```
-        cd batch
+        cd batch/02-spark-local
         pip install pyspark
         ```
-        - Start jupyter-lab server for notebooks and connect to URL for jupyter
+        - Update `batch-spark.py` with your parameters
         ```
-        jupyter-lab
+        # Replace below with you parameters
+            credentials_location = '/workspaces/de-retail-sales/creds/my-creds.json'
+            project_id = 'woven-edge-412500'
+            input_retail = 'gs://woven-edge-412500-de-retail-sales-bucket/retail_data/*'
+            output = 'gs://woven-edge-412500-de-retail-sales-bucket/star-schema/'
         ```
-        - Access and run notebook for spark - `batch-spark.ipynb`. This should process data and create star schema files in gcs bucket.
-    
-    - In Google cloud console, go to BigQuery -> run queries from `batch/load-data-bigquery`. This should create star-schema in DWH and populate the data.
+        - Run `batch-spark.py`. This should process data and create star schema files in gcs bucket.
+        ```
+        python batch-spark.py
+        ```
+        - In Google cloud console, go to Cloud Storage and verify that star schema files are created in your gcs bucket
+
+    - In Google cloud console, go to BigQuery -> run queries from `load-data-bigquery.sql`. This should create star-schema in DWH and populate the data.
 
 8. **Data Analysis - Dashboard - Looker studio**
 
