@@ -70,21 +70,32 @@ To provide intuitive insights into the processed data, we leveraged `LookerStudi
 
 ## Project structure
 
-├── README.md           # Readme file
-├── batch               # Spark batch processing
-├── extras              # Extra resources that you can use for experientation and/or adapting this framework to new projects
-├── images              # images used in README.md
-├── orchestration       # DAGs - 'mage' workflow orchestrator
-├── terraform-gcp       # Infra build in GCP - Data Lake(GCS Bucket) and Data warehouse(BigQuery dataset)
-└── terraform-mage      # Infra build in GCP - 'mage' workflow orchestrator
+├── README.md           
+├── batch              
+├── extras             
+├── images              
+├── orchestration       
+├── terraform-gcp       
+└── terraform-mage      
 
-## Dev Setup
+    README.md           # Readme file
+    batch               # Spark batch processing
+    extras              # Extra resources that you can use for experimentation and/or adapting this framework to new projects
+    images              # images used in README.md
+    orchestration       # DAGs - 'mage' workflow orchestrator
+    terraform-gcp       # Infra build in GCP - Data Lake(GCS Bucket) and Data warehouse(BigQuery dataset)
+    terraform-mage      # Infra build in GCP - 'mage' workflow orchestrator
 
-This project is entirely developed in cloud using GitHub Codespaces that mimics local system. A free version of GitHub Codespaces should suffice for this project.
+# Dev Setup
+
+This project is entirely developed in the cloud using GitHub Codespaces that mimic the local system. A free version of GitHub Codespaces should suffice for this project.
+
+GitHub Codespace: **de-retail-sales: 2 cores, 8 GB RAM, 32 GB storage** 
+
 
 ## Deployment Setup
 
-This project uses Google cloud (GCP) resources. A free version of GCP should suffice for this project.
+This project uses Google Cloud (GCP) resources. A free version of GCP should suffice for this project. If needed, you can adapt this project to use other cloud providers by finding equivalent services.
 
 Note: In the end, You may want to destroy resources used for this project to avoid recurring charges, if any.
 
@@ -103,7 +114,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
                 - Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator
             - click "Done".
         
-            Note: In case you of permissions issues, you can add "owner" role and test. Once it works, move back to granular access by adding only missing roles.
+            Note: In case of permissions issues, you can add "owner" role and test. Once it works, move back to granular access by adding only missing roles.
             
         - After you create your service account, download keys.
             - Select your service account from the list.
@@ -231,7 +242,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     GOOGLE_LOCATION: US # Optional
     ```
 
-6. **workflow orchestration: directed acyclic graph(DAG)**
+6. **Workflow orchestration: directed acyclic graph(DAG)**
 
     - Let's start by creating a pipeline and adding our 1st block, a python **data loader**
         - Click Pipelines -> standard(batch)
@@ -274,7 +285,9 @@ Note: In the end, You may want to destroy resources used for this project to avo
     
 7. **Batch processing**
 
-    **Option 1: Spark Dataproc Cluster (Managed apache Hadoop) on GCP**
+    **Option 1: Spark Dataproc Cluster (Apache spark/Managed apache Hadoop) on GCP**
+
+    Note: Dataproc may need billing enabled on your project. In that case, skip to Option 2 to use local system.
 
     - Setting up a Spark Dataproc Cluster (Managed apache Hadoop)
         - In Google cloud console, search and click `Dataproc`
@@ -313,7 +326,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
     **Option 2: PySpark on Local system (GitHub codespace)**
 
-    - PySpark for testing on Local system (GitHub codespace)
+    - PySpark on Local system (GitHub codespace)
         - Download latest Cloud Storage and Bigquery connector for Hadoop 3.x
         ```
         cd /home/codespace/bin
