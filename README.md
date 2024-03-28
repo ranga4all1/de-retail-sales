@@ -3,6 +3,10 @@ A complete data engineering project for Montgomery County of Maryland - Warehous
 
 In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, batch processsing to building a visualization-ready dataset in OLAP DWH using star-schema.
 
+Overall, data engineering project for retail sales data empowers business to extract actionable insights, drive innovation, and stay competitive in today's dynamic retail landscape. By harnessing the power of data, retailer can unlock new opportunities for growth, efficiency, and customer satisfaction. Streamlining data pipelines and automating data workflows significantly enhances operational efficiency within retail organization. By reducing manual effort, eliminating data silos, and ensuring data consistency and integrity, businesses can save time and resources while improving overall productivity.
+
+Framework used in this project can be easily adapted to any other retail/Wholesale dataset.
+
 ## Dataset 
 We will be using Montgomery County of Maryland - Warehouse and Retail Sales dataset from data.gov
 
@@ -335,7 +339,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         ```
         python batch-spark.py
         ```
-        - In Google cloud console, go to Cloud Storage and verify that star schema files are created in your gcs bucket
+        - In Google cloud console, go to Cloud Storage and verify that star schema files are created in your gcs bucket. Delete files named `.SUCCESS` and keep all other parquet files.
 
     - In Google cloud console, go to BigQuery -> run queries from `load-data-bigquery.sql`. This should create star-schema in DWH and populate the data.
 
