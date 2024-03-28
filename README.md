@@ -1,14 +1,13 @@
 # Overview: de-retail-sales
 A complete data engineering project for Montgomery County of Maryland - Warehouse and Retail Sales.
 
-In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, batch processsing to building a visualization-ready dataset in OLAP DWH using star-schema.
+In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, and batch processsing to building a visualization-ready dataset in OLAP DWH using star-schema.
 
-Overall, data engineering project for retail sales data empowers business to extract actionable insights, drive innovation, and stay competitive in today's dynamic retail landscape. By harnessing the power of data, retailer can unlock new opportunities for growth, efficiency, and customer satisfaction. Streamlining data pipelines and automating data workflows significantly enhances operational efficiency within retail organization. By reducing manual effort, eliminating data silos, and ensuring data consistency and integrity, businesses can save time and resources while improving overall productivity.
-
-Framework used in this project can be easily adapted to any other retail/Wholesale dataset.
+Overall, a data engineering project for retail sales data empowers businesses to extract actionable insights, drive innovation, and stay competitive in today's dynamic retail landscape. By harnessing the power of data, retailers can unlock new opportunities for growth, efficiency, and customer satisfaction. Streamlining data pipelines and automating data workflows significantly enhances operational efficiency within retail organizations. By reducing manual effort, eliminating data silos, and ensuring data consistency and integrity, businesses can save time and resources while improving overall productivity.
+The framework used in this project can be easily adapted to any other retail/Wholesale dataset.
 
 ## Dataset 
-We will be using Montgomery County of Maryland - Warehouse and Retail Sales dataset from data.gov
+We will be using the Montgomery County of Maryland - Warehouse and Retail Sales dataset from data.gov
 
 [County of Maryland - Warehouse and Retail Sales](https://catalog.data.gov/dataset/warehouse-and-retail-sales)
 
