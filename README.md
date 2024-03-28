@@ -65,6 +65,16 @@ To provide intuitive insights into the processed data, we leveraged `LookerStudi
 - BigQuery - OLAP Data Warehouse
 - Looker Studio - Analytics dashboard
 
+## Project structure
+
+├── README.md           # Readme file
+├── batch               # Spark batch processing
+├── extras              # Extra resources that you can use for experientation and/or adapting this framework to new projects
+├── images              # images used in README.md
+├── orchestration       # DAGs - 'mage' workflow orchestrator
+├── terraform-gcp       # Infra build in GCP - Data Lake(GCS Bucket) and Data warehouse(BigQuery dataset)
+└── terraform-mage      # Infra build in GCP - 'mage' workflow orchestrator
+
 ## Dev Setup
 
 This project is entirely developed in cloud using GitHub Codespaces that mimics local system. A free version of GitHub Codespaces should suffice for this project.
@@ -272,7 +282,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
             zone: same as used for you gcs bucket
             cluster type: single node
             option components: Jupyter notbook and Docker
-        - In Google cloud console, go to BigQuery -> Note down temp bucket created by spark dataproc cluter in this format - `gs://[bucket]/.spark-bigquery-[jobid]-[UUID]`
+        - In Google cloud console, go to Google Cloud Storage(GCS) -> Note down temp bucket created by spark dataproc cluter in this format - `gs://[bucket]/.spark-bigquery-[jobid]-[UUID]`
 
     - Update `batch/01-dataproc/batch-spark-bigquery.py` with below parameters and save.
         ```
