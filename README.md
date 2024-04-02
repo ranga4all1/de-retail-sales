@@ -1,9 +1,10 @@
 # Overview: de-retail-sales
 A complete data engineering project for Montgomery County of Maryland - Warehouse and Retail Sales.
 
-In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, and batch processsing to building a visualization-ready dataset in OLAP DWH using star-schema.
+In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, and batch processsing to building a visualization-ready dataset in online analytical processing (`OLAP`) Data Warehouse using star-schema.
 
-Overall, a data engineering project for retail sales data empowers businesses to extract actionable insights, drive innovation, and stay competitive in today's dynamic retail landscape. By harnessing the power of data, retailers can unlock new opportunities for growth, efficiency, and customer satisfaction. Streamlining data pipelines and automating data workflows significantly enhances operational efficiency within retail organizations. By reducing manual effort, eliminating data silos, and ensuring data consistency and integrity, businesses can save time and resources while improving overall productivity.
+Overall, a data engineering project for retail sales data empowers business to extract actionable insights, drive innovation, and stay competitive in today's dynamic retail landscape. By harnessing the power of data, retailers can unlock new opportunities for growth, efficiency, and customer satisfaction. Streamlining data pipelines and automating data workflows significantly enhances operational efficiency within retail organization. By reducing manual effort, eliminating data silos, and ensuring data consistency and integrity, business can save time and resources while improving overall productivity.
+
 The framework used in this project can be easily adapted to any other retail/Wholesale dataset.
 
 ## Dataset 
@@ -103,14 +104,16 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
 1. **Setup Google Cloud Platform (GCP)**
 
-    - In Google Cloud console, create a Google Cloud Platform (GCP) project
+    - In Google Cloud console, create a new Google Cloud Platform (GCP) project. Give it a suitable name and note down PROJECT ID.
+
+    - Select the project you created at the top drop down list of projects. Make sure to use this project going forward. 
 
     - Create a service account key to enable services used in this project to access your GCP account. When creating the key, use the following settings:
 
-        - Select the project you created in the previous step.
+        - Go to `IAM & Admin` --> Service accounts
             - Click "Create Service Account".
-            - Give it any name you like and click "Create".
-            - For the Role, choose below roles, then click "Continue".
+            - Give it any name you like and click "Create and Continue".
+            - In 'Grant this service account access to project', add below roles, then click "Continue".
                 - Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator
             - click "Done".
         
@@ -119,7 +122,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         - After you create your service account, download keys.
             - Select your service account from the list.
             - Select the "Keys" tab.
-            - In the drop down menu, select "Create new key".
+            - In the `ADD KEY` drop down menu, select "Create new key".
             - Leave the "Key Type" as JSON.
             - Click "Create" to create the key and download/rename/save the key file as `my-creds.json`.
 
@@ -129,7 +132,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     cd de-retail-sales
     mkdir creds
     ```
-    -  Copy `my-creds.json` to your dev system in `creds` folder.
+    -  Copy `my-creds.json` to your dev system in `creds` folder. With GitHub codespaces, simple drap and drop gets this done.
 
     Note: Never upload/share credentials to internet/GitHub etc. This can be prevented by adding `creds` folder to `.gitignore`
     
