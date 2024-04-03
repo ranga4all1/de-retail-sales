@@ -1,4 +1,6 @@
-# Overview: de-retail-sales
+# de-retail-sales
+
+## Overview
 A complete data engineering project for Montgomery County of Maryland - Warehouse and Retail Sales.
 
 In this comprehensive data engineering project, we’ll walk through the entire process, from extracting data from a CSV file, ETL pipeline, workflow orchestration, and batch processsing to building a visualization-ready dataset in online analytical processing (`OLAP`) Data Warehouse using star-schema.
