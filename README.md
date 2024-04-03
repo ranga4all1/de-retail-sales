@@ -144,8 +144,8 @@ Note: In the end, You may want to destroy resources used for this project to avo
     terraform --version
     ```
     - Update `variables.tf` file with your variables. Look for `default = ""` in each section and update it with your values.
+    Sample values/format:
     '''
-    #### Sample values/format:
     PROJECT_ID: "<PROJECT_ID>"
     CREDENTIALS: "/workspaces/de-retail-sales/creds/my-creds.json"
     LOCATION: "US"
@@ -196,8 +196,8 @@ Note: In the end, You may want to destroy resources used for this project to avo
     gcloud storage ls --project <PROJECT_ID>
     ```
     - update 'variables.tf file with your variables. Do not change mage dafaults.
+    Sample values/format:
     '''
-    #### Sample values/format:
     PROJECT_ID: "<PROJECT_ID>"
     CREDENTIALS: "/workspaces/de-retail-sales/creds/my-creds.json"
     LOCATION: "US"
