@@ -1,5 +1,6 @@
 variable "credentials" {
   description = "my credentials"
+  #Update the below to your project
   default     = "CREDENTIALS"
   # Do NOT upload credentials files to github to repository or anywhere on internet
   # This can be done by adding those files/folders to .gitignore
@@ -37,6 +38,6 @@ variable "gcs_bucket_name" {
 
 variable "gcs_storage_class" {
   description = "Bucket storage class"
-  #Update the below to your storage class
+  #Update the below to your storage class e. g. standard
   default = "GCS_STORAGE_CLASS"
 }

@@ -22,20 +22,20 @@ variable "container_memory" {
 
 variable "project_id" {
   type        = string
-  description = "The name of the project"
-  default     = "woven-edge-412500"
+  description = "The ID of the project"
+  default     = "project_id"
 }
 
 variable "region" {
   type        = string
   description = "The default compute region"
-  default     = "us-west1"
+  default     = "REGION"
 }
 
 variable "zone" {
   type        = string
   description = "The default compute zone"
-  default     = "us-west1-a"
+  default     = "ZONE"
 }
 
 variable "repository" {

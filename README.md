@@ -141,7 +141,18 @@ Note: In the end, You may want to destroy resources used for this project to avo
     ```
     terraform --version
     ```
-    - Update `variables.tf` file with your variables
+    - Update `variables.tf` file with your variables. Look for `default = ""` in each section and update it with your values.
+    '''
+    # Sample values/format
+    PROJECT_ID: "<PROJECT_ID>"
+    CREDENTIALS: "/workspaces/de-retail-sales/creds/my-creds.json"
+    LOCATION: "US"
+    REGION: "US-WEST2"
+    BQ_DATASET_NAME: "de_retail_sales_dataset"
+    GCS_BUCKET_NAME: "<PROJECT_ID>-bucket"
+    GCS_STORAGE_CLASS: "standard"
+    '''
+
     - Update `.tf` files to terraform format 
     ```
     cd terraform-gcp
@@ -175,14 +186,24 @@ Note: In the end, You may want to destroy resources used for this project to avo
     ```
     - Login using your service account credentials file. Replace KEY_FILE with 'path to your creds json file'
     ```
-    gcloud auth login --cred-file=KEY_FILE
+    gcloud auth login --cred-file=<KEY_FILE>
     ```
     - Verify. Replace PROJECT_ID with 'your GCP project id'
     ```
     gcloud auth list
-    gcloud storage ls --project PROJECT_ID
+    gcloud storage ls --project <PROJECT_ID>
     ```
-    - update 'variables.tf file with your variables and Create mage infra. Answer `yes` when prompted.
+    - update 'variables.tf file with your variables. Do not change mage dafaults.
+    '''
+    # Sample values/format
+    PROJECT_ID: "<PROJECT_ID>"
+    CREDENTIALS: "/workspaces/de-retail-sales/creds/my-creds.json"
+    LOCATION: "US"
+    REGION: "US-WEST2"
+    ZONE: "US-WEST2-a"
+    '''
+
+    - Create mage infra. Answer `yes` when prompted.
     ```
     cd terraform-mage/gcp
     terraform fmt
