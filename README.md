@@ -344,7 +344,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         ```
         # Replace below with your GCP project_id
         project_id = '<your_project_id>'
-        # Replace below with your temp bucket created by spark dataproc cluter
+        # Replace below with your temp bucket created by spark dataproc cluster
         spark.conf.set('temporaryGcsBucket', '<dataproc-temp-bucket>')
         ```
     - Upload `batch/01-dataproc/batch-spark-bigquery.py` to your GCS bucket as `code/batch-spark-bigquery.py`
@@ -354,10 +354,10 @@ Note: In the end, You may want to destroy resources used for this project to avo
             --cluster=de-retail-sales-cluster \
             --region=us-west1 \
             --jars=gs://spark-lib/bigquery/spark-bigquery-latest_2.12.jar \
-            gs://woven-edge-412500-de-retail-sales-bucket/code/batch-spark-bigquery.py \
+            gs://<your-gcs-bucket>/code/batch-spark-bigquery.py \
             -- \
-                --input_retail=woven-edge-412500-de-retail-sales-bucket/retail_data/* \
-                --output=woven-edge-412500.de_retail_sales_star_schema`
+                --input_retail=<your-gcs-bucket>/retail_data/* \
+                --output=<your-gcs-bucket>.de_retail_sales_star_schema`
         ```
         Note: The connector writes the data to BigQuery by first buffering all the data into a Cloud Storage temporary table. Then it copies all data from into BigQuery in one operation. The connector attempts to delete the temporary files once the BigQuery load operation has succeeded and once again when the Spark application terminates. If the job fails, remove any remaining temporary Cloud Storage files. Typically, temporary BigQuery files are located in gs://[bucket]/.spark-bigquery-[jobid]-[UUID]
     - In Google cloud console, go to BigQuery and verify that dataset is created/populated with data as expected
