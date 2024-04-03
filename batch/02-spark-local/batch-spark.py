@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import pandas as pd 
-import argparse
 import pyspark
 from pyspark.sql import SparkSession
 from pyspark.conf import SparkConf
@@ -11,9 +10,9 @@ from pyspark.sql.functions import monotonically_increasing_id
 
 # Replace below with you parameters
 credentials_location = '/workspaces/de-retail-sales/creds/my-creds.json'
-project_id = 'woven-edge-412500'
-input_retail = 'gs://woven-edge-412500-de-retail-sales-bucket/retail_data/*'
-output = 'gs://woven-edge-412500-de-retail-sales-bucket/star-schema/'
+project_id = 'PROJECT_ID'
+input_retail = 'gs://gs://<your-gcs-bucket>/retail_data/*'
+output = 'gs://gs://<your-gcs-bucket>/star-schema/'
 
 conf = SparkConf() \
     .setMaster('local[*]') \
@@ -40,16 +39,6 @@ spark = SparkSession.builder \
     .config("spark.hadoop.google.cloud.auth.service.account.enable", "true") \
     .config("spark.hadoop.google.cloud.auth.project.id", project_id) \
     .getOrCreate()
-
-# parser = argparse.ArgumentParser()
-
-# parser.add_argument('--input_retail', required=True)
-# parser.add_argument('--output', required=True)
-
-# args = parser.parse_args()
-
-# input_retail = args.input_retail
-# output = args.output
 
 
 df = spark.read.parquet(input_retail)
@@ -89,9 +78,6 @@ def data_modeling(df):
 
 # Call the data_modeling function and store the result
 star_schema = data_modeling(df)
-
-# # Define the GCS path where you want to save the Parquet files
-# gcs_output_path = "gs://woven-edge-412500-de-retail-sales-bucket/star-schema/"
 
 # Save each table to GCS as Parquet files
 for table_name, dataframe in star_schema.items():

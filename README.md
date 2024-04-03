@@ -366,34 +366,48 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
     **Option 2: PySpark on Local system (GitHub codespace)**
 
+    We will PySpark to process data in data lake (gcs bucket) itself.
+
     - PySpark on Local system (GitHub codespace)
         - Download latest Cloud Storage and Bigquery connector for Hadoop 3.x
         ```
+        mkdir /home/codespace/bin
         cd /home/codespace/bin
         wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-latest.jar
         wget https://storage.googleapis.com/spark-lib/bigquery/spark-3.5-bigquery-0.36.1.jar
-        cd /workspaces/de-retail-sales/batch/
+        cd /workspaces/de-retail-sales/batch/02-spark-local/
         ```
         - Run below commands in terminal
         ```
-        cd batch/02-spark-local
         pip install pyspark
         ```
         - Update `batch-spark.py` with your parameters
         ```
-        # Replace below with you parameters
+            # Replace below with you parameters
             credentials_location = '/workspaces/de-retail-sales/creds/my-creds.json'
-            project_id = 'woven-edge-412500'
-            input_retail = 'gs://woven-edge-412500-de-retail-sales-bucket/retail_data/*'
-            output = 'gs://woven-edge-412500-de-retail-sales-bucket/star-schema/'
+            project_id = 'PROJECT_ID'
+            input_retail = 'gs://<your-gcs-bucket>/retail_data/*'
+            output = 'gs://<your-gcs-bucket>/star-schema/'
         ```
         - Run `batch-spark.py`. This should process data and create star schema files in gcs bucket.
         ```
         python batch-spark.py
         ```
-        - In Google cloud console, go to Cloud Storage and verify that star schema files are created in your gcs bucket. Delete files named `.SUCCESS` and keep all other parquet files.
+        - In Google cloud console, go to Cloud Storage and verify that star schema files in 4 folders are created in your gcs bucket. Delete files named `.SUCCESS` in each folder and keep all other parquet files.
 
-    - In Google cloud console, go to BigQuery -> run queries from `load-data-bigquery.sql`. This should create star-schema in DWH and populate the data.
+        Sample output of processed data:
+
+        ![star-schema-gcs](images/star-schema-gcs.png)
+
+    - In Google cloud console, go to BigQuery -> Click on 3 dots next to your dataset -> Copy ID
+        - Update queries in `load-data-bigquery.sql` with that ID and with your gcs bucket name.
+        - In BigQuery, Click + sign to 'Create SQL query'. Copy and paste contents of `load-data-bigquery.sql` to it.
+        - Run those queries squentially. This should create star-schema in DWH and populate the data.
+
+        Sample star-schema tables created in BigQuery:
+
+        ![star-schema-DWH](images/star-schema-DWH.png)
+
 
 8. **Data Analysis - Dashboard - Looker studio**
 
@@ -419,6 +433,6 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
     - In the next iteration of this project:
 
-        - Fully automate end-to-end pipeline by creating/scheduling spark-submit job via Mage workflow orchestrator.
         - Data ingestion : Add backfill, parameterization etc.
+        - Fully automate end-to-end pipeline by creating/scheduling spark-submit job via Mage workflow orchestrator.
         - make and CI/CD
