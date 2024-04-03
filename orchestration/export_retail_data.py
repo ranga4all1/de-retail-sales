@@ -7,8 +7,8 @@ if 'data_exporter' not in globals():
 
 # update the variables below
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/home/src/my-creds.json'
-project_id = 'woven-edge-412500'
-bucket_name = 'woven-edge-412500-de-retail-sales-bucket'
+project_id = 'PROJECT_ID'
+bucket_name = 'YOUR_GCS_BUCKET_NAME'
 object_key = 'retail_data.parquet'
 table_name = 'retail_data'
 root_path = f'{bucket_name}/{table_name}'

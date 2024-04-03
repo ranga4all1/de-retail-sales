@@ -16,9 +16,6 @@ def load_data_from_api(*args, **kwargs):
     # URL for retail and wholesale sales data
     url = 'https://data.montgomerycountymd.gov/api/views/v76h-r7br/rows.csv?accessType=DOWNLOAD'
 
-    # response = requests.get(url)
-    # return pd.read_csv(io.StringIO(response.text), sep=',')
-
     # Load data in pandas data
     data = pd.read_csv(url, sep=',')
 

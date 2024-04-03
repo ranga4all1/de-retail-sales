@@ -120,7 +120,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         
             Note: We are using "owner" role here. For production projects, after testing, move back to granular access by adding only required roles. e.g.
 
-                - Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator + ...
+                Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator + ...
             
         - After you create your service account, download keys.
             - Select your service account from the list.
@@ -228,7 +228,8 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
 5. **Mage workflow orchestration env configuration**
 
-    - In Google cloud console, go to 'Cloud Run' -> Networking. Select 'All' in Ingress control and 'save'.
+    - In Google cloud console, go to 'Cloud Run' -> 'mage-data-prep' -> Networking tab. Select 'All' in Ingress control and 'save'.
+        
         Note:  For simplicity, we are allowing all access. You can go more granular by allowing your own ip address only.
 
     ![Mage Cloud Run](images/mage-cloud-run.png)
@@ -237,25 +238,26 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
     ![Mage](images/mage-url.png)
 
-    - In Mage workflow orchestrator GUI, click 'Files', Right click on 'default_repo' -> Upload files. Upload your mage service account credentials file. This is the credentials file that have access to required GCP resources sunch as gcs bucket and BigQuerry.
-    - Click Terminal and run below commands from within `/home/src` dir to move that file to `/home/src/`
+    - In Mage workflow orchestrator GUI, click 'Files', Right click on 'default_repo' -> Upload files. Upload your mage service account credentials file `my-creds.json`. This is the credentials file that have access to required GCP resources sunch as gcs bucket and BigQuerry.
+    - In Mage workflow orchestrator GUI, Click 'Terminal' and run below commands from within `/home/src` dir to move that file to `/home/src/`
     ```
     bash
     pwd
-    mv default_repo/<my-creds>.json my-creds.json
+    mv default_repo/my-creds.json my-creds.json
     ```
     - In Mage workflow orchestrator GUI, click 'Files' and locate `io_config.yaml` file and **delete or comment out** below section
     ```
+    # Google
     GOOGLE_SERVICE_ACC_KEY:
-      type: service_account
-      project_id: project-id
-      private_key_id: key-id
-      private_key: "-----BEGIN PRIVATE KEY-----\nyour_private_key\n-----END_PRIVATE_KEY"
-      client_email: your_service_account_email
-      auth_uri: "https://accounts.google.com/o/oauth2/auth"
-      token_uri: "https://accounts.google.com/o/oauth2/token"
-      auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
-      client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/your_service_account_email"
+    #  type: service_account
+    #  project_id: project-id
+    #  private_key_id: key-id
+    #  private_key: "-----BEGIN PRIVATE KEY-----\nyour_private_key\n-----END_PRIVATE_KEY"
+    #  client_email: your_service_account_email
+    #  auth_uri: "https://accounts.google.com/o/oauth2/auth"
+    #  token_uri: "https://accounts.google.com/o/oauth2/token"
+    #  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
+    #  client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/your_service_account_email"
     ```
     - Update this remaining section below it with `/home/src/my-creds.json`
 
@@ -273,25 +275,32 @@ Note: In the end, You may want to destroy resources used for this project to avo
 6. **Workflow orchestration: directed acyclic graph(DAG)**
 
     - Let's start by creating a pipeline and adding our 1st block, a python **data loader**
-        - Click Pipelines -> standard(batch)
-        - Click Data Loader -> Python -> API
-        - Use name: `load_retail_data`
+        - In Mage workflow orchestrator GUI, Click 'Pipelines' -> 'New' -> standard(batch)
+        - Replace auto generated pipeline name to `ingest_retail_data_gcs` and click 'Save'.
+        - Click 'Data Loader' -> Python -> API
+        - Replace auto generated name to: `load_retail_data`
         - Click 'Save and Add'
         - Replace or match template code with code from `orchestration/load_retail_data.py`
         - Save and Click 'Run block' button. Successful execution would show that test passed and also show first 10 rows of dataframe and shape of dataframe.
-    - For easy reference later, Rename auto generated pipeline name to `ingest_retail_data_gcs`
+   
     - Now Let's create a 2nd block - **Transformer**, directly below data loader block
         - Click Transformer -> Python -> Generic(no template)
-        - Use name: `transform_retail_data`
+        - Replace auto generated name to: `transform_retail_data`
         - Click 'Save and Add'
         - Replace or match template code with code from `orchestration/transform_retail_data.py`
-        - Save and Click 'Run block' button. Successful execution would show that test passed and also show first 10 rows of dataframe and shape of dataframe.
+        - Save and Click 'Run -> Execute block' button. Successful execution would show that test passed and also show first 10 rows of dataframe and shape of dataframe.
+
     - Now Let's create a 3rd block - **Data Exporter**, directly below Transformer block
         - Click Data Exporter -> Python -> data lake -> Google CLoud Storage
-        - Use name: `export_retail_data`
+        - Replace auto generated name to: `export_retail_data`
         - Click 'Save and Add'
         - Replace or match template code with code from `orchestration/export_retail_data.py`
-        - Save and Click 'Run block' button. Successful execution would show green check mark.
+        - Update below variables in that code with your parameters 
+        ```
+        project_id = 'PROJECT_ID'
+        bucket_name = 'YOUR_GCS_BUCKET_NAME'
+        ```
+        - Save and Click 'Run -> Execute block' button. Successful execution would show green check mark.
 
         ![ETL pipeline](images/mage-etl-pipeline.png)
 
@@ -300,12 +309,15 @@ Note: In the end, You may want to destroy resources used for this project to avo
         ![GCS Bucket](images/gcs-bucket.png)
 
     - In Mage GUI, create schedule to run pipeline periodically
-        - Click 'Triggers' and use below parameters
-            Trigger type: Schedule
-            Trigger name: monthly_ingest_retail_data_gcs
-            Trigger description: Monthly data ingestion to run on 2nd day of each month
-            Frequency: monthly
-            Start date and time: Choose your start date/time
+        - Click 'Triggers' -> 'New Trigger' and use below parameters
+
+        ```
+        Trigger type: Schedule
+        Trigger name: monthly_ingest_retail_data_gcs
+        Trigger description: Monthly data ingestion to run each month
+        Frequency: monthly
+        Start date and time: Choose your start date/time
+        ```
         - Click 'Save changes'
         - Click 'Enable trigger'
 
