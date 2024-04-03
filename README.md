@@ -115,11 +115,12 @@ Note: In the end, You may want to destroy resources used for this project to avo
         - Go to `IAM & Admin` --> Service accounts
             - Click "Create Service Account".
             - Give it any name you like and click "Create and Continue".
-            - In 'Grant this service account access to project', add below roles, then click "Continue".
-                - Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator
+            - In 'Grant this service account access to project', add `owner` role, then click "Continue".
             - click "Done".
         
-            Note: In case of permissions issues, you can add "owner" role and test. Once it works, move back to granular access by adding only missing roles.
+            Note: We are using "owner" role here. For production projects, after testing, move back to granular access by adding only required roles. e.g.
+
+                - Viewer + Storage Admin + Storage Object Admin + BigQuery Admin + Artifact registry reader + Artifact registry writer + Cloud run developer + Cloud SQL Admin + Service account token creator + ...
             
         - After you create your service account, download keys.
             - Select your service account from the list.
@@ -207,7 +208,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
     ZONE: "US-WEST2-a"
     ```
 
-    - Create mage infra. Answer `yes` when prompted.
+    - Create mage infra. Provide postgres password of your choice when prompted. Answer `yes` to apply when prompted. Refer to notes below.
     ```
     cd terraform-mage/gcp
     terraform fmt
@@ -222,9 +223,8 @@ Note: In the end, You may want to destroy resources used for this project to avo
     - Verify in google cloud console that resources are created
 
     Notes:  
-    1. Provide postgres password of your choice when prompted. 
-    2. This step may fail initially after api enablement as it takes time for api to become available. In that case, rerun again.
-    3. This step may take several minutes to complete.
+    1. This step may fail initially after api enablement as it takes time for api to become available. In that case, rerun again.
+    2. This step may take several minutes to complete.
 
 5. **Mage workflow orchestration env configuration**
 
