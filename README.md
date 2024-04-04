@@ -104,6 +104,29 @@ Note: In the end, You may want to destroy resources used for this project to avo
 
 ## Steps
 
+0. **Setup GitHub Codespace**
+
+    Note: Alternatively, you can use your local system or VM in cloud etc.
+
+    - In GitHub.com, Create new repository with below parameters
+        - Repository name: test-de
+        - type: Private     # Select Public or Private as per your preference
+        - Check the box - Add a README file
+        - Add .gitignore : Python
+
+    - In GitHub.com, click on 'three horizontal lines' symbol in upper left corner -> Codespaces
+
+    - Click on 'New Codespace' and create using below parameters:
+        - Repository: test-de   # Slect your repository name
+        - Branch: main          
+        - Region: US West       # choose region closest to you
+        - MAchine Type: 2-core (8 GB RAM, 32 GB storage)    # free version preferred
+
+    - Codespace opens in browser and looks similar to VS Code
+
+    Sample codespace:
+    ![sample-codespace](images/sample-codespace.png)
+
 1. **Setup Google Cloud Platform (GCP)**
 
     - In Google Cloud console, create a new Google Cloud Platform (GCP) project. Give it a suitable name and note down PROJECT ID.
@@ -149,7 +172,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         Sample values/format:
     ```
     PROJECT_ID: "<PROJECT_ID>"
-    CREDENTIALS: "/workspaces/de-retail-sales/creds/my-creds.json"
+    CREDENTIALS: "/workspaces/test-de/de-retail-sales/creds/my-creds.json"
     LOCATION: "US"
     REGION: "US-WEST2"
     BQ_DATASET_NAME: "de_retail_sales_dataset"
@@ -202,7 +225,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         Sample values/format:
     ```
     PROJECT_ID: "<PROJECT_ID>"
-    CREDENTIALS: "/workspaces/de-retail-sales/creds/my-creds.json"
+    CREDENTIALS: "/workspaces/test-de/de-retail-sales/creds/my-creds.json"
     LOCATION: "US"
     REGION: "US-WEST2"
     ZONE: "US-WEST2-a"
@@ -375,7 +398,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         cd /home/codespace/bin
         wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-latest.jar
         wget https://storage.googleapis.com/spark-lib/bigquery/spark-3.5-bigquery-0.36.1.jar
-        cd /workspaces/de-retail-sales/batch/02-spark-local/
+        cd /workspaces/test-de/de-retail-sales/batch/02-spark-local/
         ```
         - Run below commands in terminal
         ```
@@ -384,7 +407,7 @@ Note: In the end, You may want to destroy resources used for this project to avo
         - Update `batch-spark.py` with your parameters
         ```
             # Replace below with you parameters
-            credentials_location = '/workspaces/de-retail-sales/creds/my-creds.json'
+            credentials_location = '/workspaces/test-de/de-retail-sales/creds/my-creds.json'
             project_id = 'PROJECT_ID'
             input_retail = 'gs://<your-gcs-bucket>/retail_data/*'
             output = 'gs://<your-gcs-bucket>/star-schema/'
